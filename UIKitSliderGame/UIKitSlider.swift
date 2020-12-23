@@ -16,6 +16,7 @@ struct UIKitSlider: UIViewRepresentable {
         let slider = UISlider(frame: .zero)
         slider.minimumValue = 0
         slider.maximumValue = 100
+        slider.thumbTintColor = .red
         
         slider.addTarget(
             context.coordinator,
@@ -28,25 +29,20 @@ struct UIKitSlider: UIViewRepresentable {
     
     func updateUIView(_ uiView: UISlider, context: Context) {
         uiView.value = Float(currentValue)
-        uiView.thumbTintColor = UIColor(displayP3Red: 1,
-                                        green: 0,
-                                        blue: 0,
-                                        alpha: alpha)
+        uiView.thumbTintColor = uiView.thumbTintColor?.withAlphaComponent(alpha)
     }
     
     func makeCoordinator() -> UIKitSlider.Coordinator {
-        Coordinator(currentValue: $currentValue, alpha: alpha)
+        Coordinator(currentValue: $currentValue)
     }
 }
 
 extension UIKitSlider {
     class Coordinator: NSObject {
         @Binding var currentValue: Double
-        let alpha: CGFloat
         
-        init(currentValue: Binding<Double>, alpha: CGFloat) {
+        init(currentValue: Binding<Double>) {
             self._currentValue = currentValue
-            self.alpha = alpha
         }
         
         @objc func valueChanged(_ sender: UISlider) {
